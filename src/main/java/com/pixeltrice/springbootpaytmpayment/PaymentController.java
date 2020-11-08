@@ -1,6 +1,7 @@
 package com.pixeltrice.springbootpaytmpayment;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,10 +55,13 @@ public class PaymentController {
 
 	        Map<String, String[]> mapData = request.getParameterMap();
 	        TreeMap<String, String> parameters = new TreeMap<String, String>();
-	        mapData.forEach((key, val) -> parameters.put(key, val[0]));
 	        String paytmChecksum = "";
-	        if (mapData.containsKey("CHECKSUMHASH")) {
-	            paytmChecksum = mapData.get("CHECKSUMHASH")[0];
+	        for (Entry<String, String[]> requestParamsEntry : mapData.entrySet()) {
+	            if ("CHECKSUMHASH".equalsIgnoreCase(requestParamsEntry.getKey())){
+	                paytmChecksum = requestParamsEntry.getValue()[0];
+	            } else {
+	            	parameters.put(requestParamsEntry.getKey(), requestParamsEntry.getValue()[0]);
+	            }
 	        }
 	        String result;
 
